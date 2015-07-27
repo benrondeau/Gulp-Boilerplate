@@ -9,7 +9,7 @@ gulp.task('default', function() {
 //CSS
 gulp.task('scss', function(){
   return gulp.src('css/scss/main.scss')
-    .pipe(sass())
+    .pipe(sass({outputStyle: 'compressed'}))
     .pipe(rename('main.css'))
     .pipe(gulp.dest('css/build'));
 })
