@@ -1,15 +1,41 @@
 var gulp = require('gulp'),
     sass = require('gulp-sass'),
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    sourcemaps = require('gulp-sourcemaps'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cssmin = require('gulp-minify-css'),
+    concat = require('gulp-concat'),
+    uncss = require('gulp-uncss');
 
 gulp.task('default', function() {
   console.log("default task.")
 });
 
-//CSS
+//SCSS
 gulp.task('scss', function(){
-  return gulp.src('css/scss/main.scss')
+  return gulp.src('public/css/scss/main.scss')
+    .pipe(sourcemaps.init())
     .pipe(sass({outputStyle: 'compressed'}))
-    .pipe(rename('main.css'))
-    .pipe(gulp.dest('css/build'));
-})
+    .pipe(
+      autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+      }))
+    .pipe(sourcemaps.write())
+    .pipe(rename('main.min.css'))
+    .pipe(gulp.dest('public/css/build'));
+});
+
+//Remove unused CSS, especially from vendor files
+gulp.task('uncss', function(){
+  return gulp.src('public/css/**/*.css')
+    .pipe(sourcemaps.init())
+    .pipe(concat('main.css'))
+    .pipe(uncss({
+        html: 'public/**/*.html'
+    }))
+    .pipe(cssmin())
+    .pipe(sourcemaps.write())
+    .pipe(rename('main.min.css'))
+    .pipe(gulp.dest('public/css/build'));
+});
