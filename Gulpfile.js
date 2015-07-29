@@ -5,7 +5,19 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     cssmin = require('gulp-minify-css'),
     concat = require('gulp-concat'),
-    uncss = require('gulp-uncss');
+    uncss = require('gulp-uncss'),
+    insertHeader = require('gulp-header'),
+    pkg = require('./package.json');
+
+
+var headerFile = ['/**',
+  ' * @Author <%= pkg.author %> | 2015.',
+  ' * @version v<%= pkg.version %>',
+  ' * @URL https://github.com/benrondeau',
+  ' * @license <%= pkg.license %>',
+  ' */',
+  ''].join('\n');
+
 
 gulp.task('default', function() {
   console.log("default task.")
@@ -32,10 +44,11 @@ gulp.task('uncss', function(){
     .pipe(sourcemaps.init())
     .pipe(concat('main.css'))
     .pipe(uncss({
-        html: 'public/**/*.html'
+        html: ['public/**/*.html','public/html/**/*.html']
     }))
     .pipe(cssmin())
     .pipe(sourcemaps.write())
     .pipe(rename('main.min.css'))
+    .pipe(insertHeader(headerFile, { pkg : pkg } ))
     .pipe(gulp.dest('public/css/build'));
 });
