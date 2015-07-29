@@ -1,28 +1,5 @@
 #Task Runner
 
-##SASS/CSS
-3 folders:
-- SCSS (Follows SMACSS setup)
-- Vendor (Files I just want to drop in and not edit)
-- Production (Place where files are output)
-
-SCSS Task:
-- Compile with Libsass
-- UnCSS
-- Auto prefix
-- Concat to one file
-- Add my header file
-- Output to production folder
-
-Vendor:
-- UnCSS
-- Auto prefix?
-- Minify
-- Add header to file
-
-#Images/Assets
-- Minify assets. Only do this once per asset using a 'newer' function
-
 #JS
 2 Categories
 - My stuff
@@ -46,6 +23,9 @@ Have tests for the important stuff (both CSS and JS testing)
 
 #Server
 Browsersync for live reload
+
+#tests
+Karma tests
 
 #Tasks
 Run all tasks for each save so I develop with production code

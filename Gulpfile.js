@@ -1,15 +1,23 @@
 var gulp = require('gulp'),
-    sass = require('gulp-sass'),
+    //Utility dependencies
     rename = require('gulp-rename'),
     sourcemaps = require('gulp-sourcemaps'),
-    autoprefixer = require('gulp-autoprefixer'),
-    cssmin = require('gulp-minify-css'),
     concat = require('gulp-concat'),
-    uncss = require('gulp-uncss'),
     insertHeader = require('gulp-header'),
-    pkg = require('./package.json');
+    pkg = require('./package.json'),
+    //CSS dependencies
+    sass = require('gulp-sass'),
+    autoprefixer = require('gulp-autoprefixer'),
+    cssmin = require('gulp-minify-css'), 
+    uncss = require('gulp-uncss'),
+    //Image processing dependencies
+    imagemin = require('gulp-imagemin'),
+    pngquant = require('imagemin-pngquant'),
+    //Javascript dependencies
+    babelES6 = require('gulp-babel');
 
 
+//Header file inserted in CSS/JS files
 var headerFile = ['/**',
   ' * @Author <%= pkg.author %> | 2015.',
   ' * @version v<%= pkg.version %>',
@@ -19,11 +27,13 @@ var headerFile = ['/**',
   ''].join('\n');
 
 
-gulp.task('default', function() {
+// Server task for development
+gulp.task('serve', function() {
   console.log("default task.")
 });
 
-//SCSS
+
+//SCSS Compike/minify
 gulp.task('scss', function(){
   return gulp.src('public/css/scss/main.scss')
     .pipe(sourcemaps.init())
@@ -38,8 +48,9 @@ gulp.task('scss', function(){
     .pipe(gulp.dest('public/css/build'));
 });
 
+
 //Remove unused CSS, especially from vendor files
-gulp.task('uncss', function(){
+gulp.task('uncss', ['scss'], function(){
   return gulp.src('public/css/**/*.css')
     .pipe(sourcemaps.init())
     .pipe(concat('main.css'))
@@ -51,4 +62,27 @@ gulp.task('uncss', function(){
     .pipe(rename('main.min.css'))
     .pipe(insertHeader(headerFile, { pkg : pkg } ))
     .pipe(gulp.dest('public/css/build'));
+});
+
+
+// Minify Images
+gulp.task('imagemin', function () {
+    return gulp.src('public/img/*')
+        .pipe(imagemin({
+            progressive: true,
+            svgoPlugins: [{removeViewBox: false}],
+            use: [pngquant()]
+        }))
+        .pipe(gulp.dest('public/img/'));
+});
+
+
+//Javascript Processing
+gulp.task('clientJS', function () {
+    return gulp.src('public/js/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(babel())
+        .pipe(concat('main.min.js'))
+        .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest('public/js'));
 });
