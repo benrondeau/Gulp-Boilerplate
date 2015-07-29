@@ -13,6 +13,7 @@
     "url": "https://github.com/benrondeau/Gulp-Boilerplate"
   },
   "devDependencies": {
+    "browser-sync": "^2.8.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-babel": "^5.1.0",

@@ -19,24 +19,43 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     babelES6 = require('gulp-babel').
     //Tests
-    karma = require('gulp-karma');
+    karma = require('gulp-karma'),
+    //Server
+    browserSync = require('browser-sync'),
+    reload = browserSync.reload;
 
 
 //Header file inserted in CSS/JS files
 var headerFile = ['/**',
-  ' * @Author <%= pkg.author %> | 2015.',
-  ' * @version v<%= pkg.version %>',
-  ' * @URL https://github.com/benrondeau',
-  ' * @license <%= pkg.license %>',
-  ' */',
-  ''].join('\n');
+    ' * @Author <%= pkg.author %> | 2015.',
+    ' * @version v<%= pkg.version %>',
+    ' * @URL https://github.com/benrondeau',
+    ' * @license <%= pkg.license %>',
+    ' */',
+    ''].join('\n');
 
 
-// Server task for development
-gulp.task('serve', function() {
-  console.log("default task.")
+//Development Server
+gulp.task('serve', ['browser-sync', 'watch']);
+
+
+// Browser Reload
+gulp.task('browser-sync', function() {
+    browserSync({
+        server: {
+            baseDir: "public/"
+        }
+    });
 });
 
+
+//File watching for BrowserSync
+gulp.task('watch', function() {
+    gulp.watch('public/css/**/*.scss', ['scss']);
+    gulp.watch('public/js/**/*.js', ['clientJS']);
+    gulp.watch('public/**/*.html');
+    // gulp.watch('img/*', ['imgmin']);
+});
 
 //SCSS Compike/minify
 gulp.task('scss', function(){
@@ -50,7 +69,8 @@ gulp.task('scss', function(){
       }))
     .pipe(sourcemaps.write())
     .pipe(rename('main.min.css'))
-    .pipe(gulp.dest('public/dist/css'));
+    .pipe(gulp.dest('public/dist/css'))
+    .pipe(reload({stream:true}));
 });
 
 
@@ -94,7 +114,8 @@ gulp.task('clientJS', function () {
         .pipe(rename('main.min.js'))
         .pipe(insertHeader(headerFile, { pkg : pkg } ))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('public/dist/js'));
+        .pipe(gulp.dest('public/dist/js'))
+        .pipe(reload({stream:true}));
 });
 
 
@@ -105,7 +126,7 @@ gulp.task('html', function () {
 
 
 //Task Running
-gulp.task('tasks', function() {
+gulp.task('tests', function() {
   gulp.src('tests/**/*.js')
     .pipe(karma({
       configFile: 'karma.conf.js',
