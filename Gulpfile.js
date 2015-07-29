@@ -81,7 +81,7 @@ gulp.task('imagemin', function () {
 gulp.task('clientJS', function () {
     return gulp.src('public/js/**/*.js')
         .pipe(sourcemaps.init())
-        .pipe(babel())
+        .pipe(babelES6())
         .pipe(concat('main.min.js'))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('public/js'));
