@@ -16,7 +16,10 @@ var gulp = require('gulp'),
     //Javascript dependencies
     jshint = require('gulp-jshint'),
     jshintStylish = require('jshint-stylish'),
-    babelES6 = require('gulp-babel');
+    uglify = require('gulp-uglify'),
+    babelES6 = require('gulp-babel').
+    //Tests
+    karma = require('gulp-karma');
 
 
 //Header file inserted in CSS/JS files
@@ -81,12 +84,31 @@ gulp.task('imagemin', function () {
 
 //Javascript Processing
 gulp.task('clientJS', function () {
-    return gulp.src('public/js/**/*.js')
+    return gulp.src('public/js/author/**/*.js')
         .pipe(sourcemaps.init())
+        .pipe(concat('everything.js'))
         .pipe(jshint('.jshintrc'))
         .pipe(jshint.reporter('jshint-stylish'))
         .pipe(babelES6())
-        .pipe(concat('main.min.js'))
+        .pipe(uglify())
+        .pipe(rename('main.min.js'))
+        .pipe(insertHeader(headerFile, { pkg : pkg } ))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('public/dist/js'));
+});
+
+
+//HTML Processing
+gulp.task('html', function () {
+    //TBD
+});
+
+
+//Task Running
+gulp.task('tasks', function() {
+  gulp.src('tests/**/*.js')
+    .pipe(karma({
+      configFile: 'karma.conf.js',
+      action: 'run'
+    }));
 });
