@@ -14,6 +14,8 @@ var gulp = require('gulp'),
     imagemin = require('gulp-imagemin'),
     pngquant = require('imagemin-pngquant'),
     //Javascript dependencies
+    jshint = require('gulp-jshint'),
+    jshintStylish = require('jshint-stylish'),
     babelES6 = require('gulp-babel');
 
 
@@ -45,7 +47,7 @@ gulp.task('scss', function(){
       }))
     .pipe(sourcemaps.write())
     .pipe(rename('main.min.css'))
-    .pipe(gulp.dest('public/css/build'));
+    .pipe(gulp.dest('public/dist/css'));
 });
 
 
@@ -61,7 +63,7 @@ gulp.task('uncss', ['scss'], function(){
     .pipe(sourcemaps.write())
     .pipe(rename('main.min.css'))
     .pipe(insertHeader(headerFile, { pkg : pkg } ))
-    .pipe(gulp.dest('public/css/build'));
+    .pipe(gulp.dest('public/dist/css'));
 });
 
 
@@ -73,7 +75,7 @@ gulp.task('imagemin', function () {
             svgoPlugins: [{removeViewBox: false}],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest('public/img/'));
+        .pipe(gulp.dest('public/dist/img'));
 });
 
 
@@ -81,8 +83,10 @@ gulp.task('imagemin', function () {
 gulp.task('clientJS', function () {
     return gulp.src('public/js/**/*.js')
         .pipe(sourcemaps.init())
+        .pipe(jshint('.jshintrc'))
+        .pipe(jshint.reporter('jshint-stylish'))
         .pipe(babelES6())
         .pipe(concat('main.min.js'))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('public/js'));
+        .pipe(gulp.dest('public/dist/js'));
 });

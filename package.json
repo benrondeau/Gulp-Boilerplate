@@ -19,11 +19,13 @@
     "gulp-concat": "^2.6.0",
     "gulp-header": "^1.2.2",
     "gulp-imagemin": "^2.3.0",
+    "gulp-jshint": "^1.11.2",
     "gulp-minify-css": "^1.2.0",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^2.0.4",
     "gulp-sourcemaps": "^1.5.2",
     "gulp-uncss": "^1.0.2",
-    "imagemin-pngquant": "^4.1.2"
+    "imagemin-pngquant": "^4.1.2",
+    "jshint-stylish": "^2.0.1"
   }
 }
